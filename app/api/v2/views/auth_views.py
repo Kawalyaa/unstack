@@ -70,3 +70,36 @@ def signup_user():
 
     return make_response(jsonify({
         "message": "User exists"}), 409)
+
+
+@auth.route('/api/v2/auth/login', methods=['POST'])
+def login_user():
+    req = request.get_json()
+    if not req:
+        return jsonify({"message": "Content should be json"})
+    user_name = req['user_name']
+    password = req['password']
+
+    login = {
+        "user_name": user_name,
+        "password": password
+    }
+    validate_user(login)
+    res = UserModel().check_exists('users', 'user_name', login['user_name'])
+    if res is False:
+        return make_response(jsonify({
+            "message": "No user found"
+        }), 401)
+    record = UserModel().get_user_by_username(login['user_name'])
+    user_id, password = record
+    # our user name has got the password and the user_id
+    # This means if login['user_name'] == user_name in table, record or user_name has user_id, password
+    if password != login['password']:
+        return make_response(jsonify({
+            "message": "user_name and password does not much"
+        }), 401)
+    token = UserModel().ecnode_token(user_id)
+    return make_response(jsonify({
+        "message": "Welcome {}".format(login['user_name']),
+        "access_token": str(token)
+    }), 200)
