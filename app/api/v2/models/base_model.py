@@ -1,7 +1,8 @@
-from app.db_con import DataBaseConnection as db_con
 from datetime import datetime, timedelta
 import jwt
 import os
+from flask import current_app
+from app.db_con import DataBaseConnection as db_con
 KEY = os.getenv("SECRET")
 
 
@@ -17,17 +18,15 @@ class BaseModel(db_con):
                 # The time token is generated
                 "iat": datetime.utcnow(),
                 # User to be idenfied
-                "user": int(user_id)
+                "sub": int(user_id)
             }
-            token = jwt.encode(
+            return jwt.encode(
                 payload,
-                KEY,
+                current_app.config.get('SECRET'),
                 algorithm="HS256"
-            ).decode('utf-8')
-            resp = token
+            )  # .decode('utf-8')
         except Exception as e:
-            resp = e
-        return resp
+            return e
 
     def check_exists(self, table_name, field_name, value):
         con = self.init_db()
@@ -51,18 +50,20 @@ class BaseModel(db_con):
 
     def decode_token(self, auth_token):
         """This function takes in an authtoken and decodes it, returning an integer or string"""
-        if self.blacklisted(auth_token):
-            return "Token has been blacklisted"
-        secret = os.getenv("SECRET")
+        # secret = os.getenv("SECRET")
+        # secret = current_app.config.get('SECRET')
         try:
-            payload = jwt.decode(auth_token, secret)
+            payload = jwt.decode(auth_token, current_app.config.get('SECRET'))
+            if self.blacklisted(auth_token):
+                return "Token has been blacklisted"
             # We decode the auth_token using the same secret key used to encode it
             # If it is valid we get or the user_id from the "user" index of payload
-            return payload['user']  # user_id
+            else:
+                return payload['sub']  # user_id
         except jwt.ExpiredSignatureError:
-            return "The token has expired"
+            return "The token has expired.Please log in again."
         except jwt.InvalidTokenError:
-            return "The token is invalid"
+            return "The token is invalid.Please log in again."
 
     def delete_tb_value(self, table_name, field_name, value):
         if self.check_exists(table_name, field_name, value) is False:
