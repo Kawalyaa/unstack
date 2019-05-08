@@ -33,6 +33,10 @@ class BaseTest(unittest.TestCase):
             "password": "bornagaini",
             "email": "kawalyas@gmail.com"
         }
+        self.question = {
+            "title": "Tech News",
+            "description": "Who is the founder of Tesla"
+        }
 
         with self.app.app_context():
             self.db = DataBaseConnection().init_db()
@@ -77,9 +81,13 @@ class BaseTest(unittest.TestCase):
         res = self.post(path=path, data=self.user, auth=None)
         return res
 
-    def post_question(self):
-        res = self.post(path="/question", data=self.qustion, auth=None)
-        return res
+    # def post_question(self):
+    #    """The user first login to post aquestion"""
+    #    resp = self.normal_login()
+    #    data = json.loads(resp.data.decode())
+    #    token = data['access_token']
+    #    res = self.post(path="api/v2/question", data=self.question, auth=token)
+    #    return res
 
     def normal_login(self):
         self.post_user(path='api/v2/auth/signup')
@@ -100,12 +108,13 @@ class BaseTest(unittest.TestCase):
         return logout
 
     def post_questions(self):
-        question = {
-            "title": "WORLDI NEWZ",
-            "description": "Where are the tesla factories found"
-        }
         token = self.normal_login().json['access_token']
-        res = self.post(path='/question', data=question, auth=token)
+        res = self.post(path='api/v2/question', data=self.question, auth=token)
+        return res
+
+    def invalid_question(self):
+        """Posting question with no token"""
+        res = self.post(path='api/v2/question', data=self.question, auth=None)
         return res
 
     def tearDown(self):

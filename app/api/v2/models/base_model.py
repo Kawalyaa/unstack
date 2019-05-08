@@ -92,7 +92,7 @@ class BaseModel(db_con):
         if not data:
             return ("It is a required field")
 
-    def get_item_by_input(self, table_name, field_name, value):
+    def get_item(self, table_name, field_name, value):
         con = self.init_db()
         cur = con.cursor()
         query = "SELECT * FROM {} WHERE {}='{}'".format(table_name, field_name, value)
