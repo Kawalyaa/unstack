@@ -26,3 +26,16 @@ class TestQuestion(BaseTest):
         self.post_questions()
         res = self.post_questions()
         self.assertEqual(res.status_code, 409)
+
+    def test_getting_questions(self):
+        self.post_questions()
+        res = self.get_questions()
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['message'], "ok")
+
+    def test_getting_questions_from_empty_database(self):
+        res = self.get_questions()
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['message'], "Database is empty")

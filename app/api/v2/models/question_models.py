@@ -36,3 +36,23 @@ class QuestionModel(BaseModel):
         question_id = cur.fetchone()[0]
         con.commit()
         return int(question_id)
+
+    def get_question(self):
+        con = self.init_db()
+        cur = con.cursor()
+        query = "SELECT * FROM questions;"
+        cur.execute(query)
+        data = cur.fetchall()
+        res = []
+
+        for i, items in enumerate(data):
+            question_id, title, description, user_id, created_on = items
+            question = dict(
+                question_id=question_id,
+                title=title,
+                description=description,
+                user_id=int(user_id),
+                created_on=str(created_on)
+            )
+            res.append(question)
+        return res
