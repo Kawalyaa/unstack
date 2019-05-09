@@ -32,7 +32,7 @@ def post_question():
             requester = QuestionModel(**data)
             check = requester.get_item('questions', 'description', data["description"])
             if check:
-                return("question already exists"), 409
+                return jsonify({"message": "question already exists"}), 409
             post_id = requester.save()
             if isinstance(post_id, int):
                 try:
@@ -74,3 +74,19 @@ def get_all_questions():
 
     else:
         return make_response(jsonify({"message": "Database is empty"}))
+
+
+@question.route('/api/v2/question/<int:question_id>')
+@auth_required
+def get_one_question(question_id):
+    """get aquestion by id """
+
+    result = QuestionModel().get_one_question(question_id)
+    if result == "Not found":
+        return make_response(jsonify({"message": "Question not found in the database"}), 404)
+
+    else:
+        return make_response(jsonify({
+            "message": "ok",
+            "question": result
+        }), 200)

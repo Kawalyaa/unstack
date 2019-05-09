@@ -26,8 +26,8 @@ class QuestionModel(BaseModel):
             "description": self.description,
             "user_id": self.user_id
         }
-        if self.check_exists('questions', 'description', question['description']) is True:
-            return ('question exists')
+        # if self.check_exists('questions', 'description', question['description']) is True:
+        #    return jsonify({"message": "question exists"}), 409
         con = self.init_db()
         cur = con.cursor()
         query = """INSERT INTO questions (title, description, user_id, created_on) VALUES \
@@ -55,4 +55,25 @@ class QuestionModel(BaseModel):
                 created_on=str(created_on)
             )
             res.append(question)
+        return res
+
+    def get_one_question(self, question_id):
+        """Method to get a single question"""
+
+        if self.check_exists('questions', 'question_id', question_id) is False:
+            return ("Not found")
+        con = self.init_db()
+        cur = con.cursor()
+        query = "SELECT title, description, user_id, created_on FROM questions WHERE question_id={};".format(question_id)
+        cur.execute(query)
+        data = cur.fetchone()
+        res = []
+
+        question = dict(
+            title=data[0],
+            description=data[1],
+            user_id=int(data[2]),
+            created_on=str(data[3])
+        )
+        res.append(question)
         return res

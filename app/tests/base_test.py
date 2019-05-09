@@ -122,6 +122,11 @@ class BaseTest(unittest.TestCase):
         res = self.get(path='api/v2/question', auth=token)
         return res
 
+    def get_one_question(self):
+        token = self.normal_login().json['access_token']
+        res = self.get(path='api/v2/question/1', auth=token)
+        return res
+
     def tearDown(self):
         """This function destroys objests created during the test run"""
 

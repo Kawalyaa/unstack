@@ -39,3 +39,16 @@ class TestQuestion(BaseTest):
         data = json.loads(res.data.decode())
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['message'], "Database is empty")
+
+    def test_getting_one_question(self):
+        self.post_questions()
+        res = self.get_one_question()
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['message'], "ok")
+
+    def test_getting_missing_question(self):
+        res = self.get_one_question()
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['message'], "Question not found in the database")
