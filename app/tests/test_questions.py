@@ -52,3 +52,32 @@ class TestQuestion(BaseTest):
         data = json.loads(res.data.decode())
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['message'], "Question not found in the database")
+
+    def test_editing_question(self):
+        self.post_questions()
+        res = self.edit_question()
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['message'], "question with id 1 is updated")
+
+    def test_editing_question_not_existing(self):
+        res = self.edit_question()
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['message'], "Item  is not found in the database")
+        self.assertTrue(data['message'])
+
+    def test_deleting_question(self):
+        self.post_questions()
+        res = self.delete_question()
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['message'], "question with id 1 is Deleted")
+        self.assertTrue(data['message'])
+
+    def test_deleting_un_existing_question(self):
+        res = self.delete_question()
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['message'], "No item found")
+        self.assertTrue(data['message'])

@@ -77,3 +77,14 @@ class QuestionModel(BaseModel):
         )
         res.append(question)
         return res
+
+    def update_question(self, title, description, question_id):
+        # if self.check_exists('questions', 'question_id', question_id) is False:
+        #    return ("Not found"), 404
+        con = self.init_db()
+        cur = con.cursor()
+        query = "UPDATE questions SET title = '{}', description = '{}'\
+        WHERE question_id = '{}';".format(title, description, question_id)
+        cur.execute(query)
+        con.commit()
+        return "Updated"

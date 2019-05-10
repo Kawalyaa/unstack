@@ -37,6 +37,10 @@ class BaseTest(unittest.TestCase):
             "title": "Tech News",
             "description": "Who is the founder of Tesla"
         }
+        self.question2 = {
+            "title": "Tech News",
+            "description": "Who is the founder of Tesla and spacex"
+        }
 
         with self.app.app_context():
             self.db = DataBaseConnection().init_db()
@@ -56,6 +60,25 @@ class BaseTest(unittest.TestCase):
         else:
             headers = self.get_headers(authtoken=auth)
         res = self.client.post(path=path, data=dto, headers=headers, content_type='application/json')
+        return res
+
+    def put(self, path, data, auth):
+        """This endpoint allows posting data for both authentication and open"""
+        dto = json.dumps(data)
+        if auth is None:
+            headers = None
+        else:
+            headers = self.get_headers(authtoken=auth)
+        res = self.client.put(path=path, data=dto, headers=headers, content_type='application/json')
+        return res
+
+    def delete(self, path, auth):
+        """This endpoint allows deleting data for  authentication"""
+        if auth is None:
+            headers = None
+        else:
+            headers = self.get_headers(authtoken=auth)
+        res = self.client.delete(path=path, headers=headers, content_type='application/json')
         return res
 
     def post2(self, path, auth):
@@ -125,6 +148,16 @@ class BaseTest(unittest.TestCase):
     def get_one_question(self):
         token = self.normal_login().json['access_token']
         res = self.get(path='api/v2/question/1', auth=token)
+        return res
+
+    def edit_question(self):
+        token = self.normal_login().json['access_token']
+        res = self.put(path='api/v2/question/1', data=self.question2, auth=token)
+        return res
+
+    def delete_question(self):
+        token = self.normal_login().json['access_token']
+        res = self.delete(path='api/v2/question/1', auth=token)
         return res
 
     def tearDown(self):

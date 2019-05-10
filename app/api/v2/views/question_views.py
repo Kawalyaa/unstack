@@ -76,7 +76,7 @@ def get_all_questions():
         return make_response(jsonify({"message": "Database is empty"}))
 
 
-@question.route('/api/v2/question/<int:question_id>')
+@question.route('/api/v2/question/<int:question_id>', methods=['GET'])
 @auth_required
 def get_one_question(question_id):
     """get aquestion by id """
@@ -90,3 +90,34 @@ def get_one_question(question_id):
             "message": "ok",
             "question": result
         }), 200)
+
+
+@question.route('/api/v2/question/<int:question_id>', methods=['PUT'])
+@auth_required
+def edit_question(question_id):
+    """Endpoint for editing a question"""
+    if not request.json:
+        return jsonify({"message": "Data should be in json format"})
+    data = request.get_json()
+    title = data['title']
+    description = data['description']
+    if QuestionModel().check_exists('questions', 'question_id', question_id) is False:
+        return make_response(jsonify({"message": "Item  is not found in the database"}), 404)
+    QuestionModel().update_question(title, description, question_id)
+
+    return make_response(jsonify({
+        "message": "question with id {} is updated".format(question_id)
+    }), 200)
+
+
+@question.route('/api/v2/question/<int:question_id>', methods=['DELETE'])
+@auth_required
+def delete(question_id):
+    """endpoint for deleting aquestion"""
+    if QuestionModel().check_exists('questions', 'question_id', question_id) is False:
+        return make_response(jsonify({"message": "No item found"}), 404)
+    deleted = QuestionModel()
+    # delete question
+    deleted.delete_tb_value("questions", "question_id", question_id)
+    message = "question with id {} is Deleted".format(question_id)
+    return make_response(jsonify({"message": message}), 200)
