@@ -20,7 +20,17 @@ def tables():
     user_id numeric NOT NULL,
     created_on timestamp with time zone DEFAULT ('now'::text)::date NOT NULL
     );"""
-    return[users, blacklist, questions]
+
+    answers = """CREATE TABLE IF NOT EXISTS answers (
+    answer_id serial PRIMARY KEY NOT NULL,
+    question_id numeric NOT NULL,
+    user_id numeric NOT NULL,
+    description varchar (200) NOT NULL,
+    up_votes numeric DEFAULT 0,
+    date_created timestamp with time zone DEFAULT ('now'::text)::date NOT NULL,
+    user_preferred boolean DEFAULT false
+    );"""
+    return[users, blacklist, questions, answers]
 
 
 def destroydb():
@@ -28,4 +38,5 @@ def destroydb():
     users = """DROP TABLE IF EXISTS users CASCADE;"""
     blacklist = """DROP TABLE IF EXISTS blacklist CASCADE;"""
     questions = """DROP TABLE IF EXISTS questions CASCADE;"""
-    return[users, blacklist, questions]
+    answers = """DROP TABLE IF EXISTS answers CASCADE;"""
+    return[users, blacklist, questions, answers]
