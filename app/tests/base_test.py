@@ -54,6 +54,15 @@ class BaseTest(unittest.TestCase):
         res = self.client.post(path=path, data=dto, headers=headers, content_type='application/json')
         return res
 
+    def post2(self, path, auth):
+        """This endpoint allows posting data for both authentication and open"""
+        if auth is None:
+            headers = None
+        else:
+            headers = self.get_headers(authtoken=auth)
+        res = self.client.post(path=path, headers=headers, content_type='application/json')
+        return res
+
     def get(self, path, auth):
         if auth is None:
             headers = None
@@ -82,16 +91,13 @@ class BaseTest(unittest.TestCase):
         login = self.post(path='api/v2/auth/login', data=self.log2, auth=None)
         return login
 
-    def login(self):
-        self.post_user(path='/auth/signup')
-        payload = {
-            "user_name": self.user['user_name'],
-            "password": self.user['password']
-        }
-        login = self.post(path='/auth/login', data=payload, auth=None)
-        result = json.loads(login.data)
-        token = result['access_token']
-        return token
+    def logout(self):
+        res = self.normal_login()
+        # result = json.loads(login.data)
+        data = json.loads(res.data.decode())
+        token = data['access_token']
+        logout = self.post2(path='api/v2/auth/logout', auth=token)
+        return logout
 
     def post_questions(self):
         question = {

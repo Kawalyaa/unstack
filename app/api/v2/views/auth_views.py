@@ -3,8 +3,10 @@ from flask import request, make_response, jsonify, Blueprint
 # from flasgger import swag_from
 from app.api.v2.models.auth_models import UserModel
 from werkzeug.exceptions import BadRequest
+# from flask.views import MethodView
 import string
 import re
+# import jwt
 
 auth = Blueprint('api_v2', __name__)
 
@@ -64,7 +66,7 @@ def signup_user():
         token = UserModel.ecnode_token(user_id)
         return make_response(jsonify({
             "message": "created successfully",
-            "access_token": str(token),
+            "access_token": token.decode(),
             "user_id": user_id
         }), 201)
 
@@ -98,8 +100,44 @@ def login_user():
         return make_response(jsonify({
             "message": "user_name and password does not much"
         }), 401)
-    token = UserModel().ecnode_token(user_id)
+    user = UserModel()
+    token = user.ecnode_token(user_id)
     return make_response(jsonify({
         "message": "Welcome {}".format(login['user_name']),
-        "access_token": str(token)
+        "access_token": token.decode()
     }), 200)
+
+
+@auth.route('/api/v2/auth/logout', methods=['POST'])
+def logout_user():
+    auth_header = request.headers.get('Authorization')
+    if auth_header:
+        auth_token = auth_header.split(" ")[1]
+    else:
+            auth_token = ''
+    if auth_token:
+        resp = UserModel().decode_token(auth_token)
+        if not isinstance(resp, str):
+            UserModel().logout(auth_token)
+            try:
+                return make_response(jsonify({
+                    "message": "Loged out successfully"
+                }), 200)
+            except Exception as e:
+                responseObject = {
+                    'status': 'fail',
+                    'message': e
+                }
+                return make_response(jsonify(responseObject)), 200
+        else:
+            responseObject = {
+                'status': 'fail',
+                'message': resp
+            }
+            return make_response(jsonify(responseObject)), 401
+    else:
+        responseObject = {
+            'status': 'fail',
+            'message': 'Provide a valid auth token.'
+        }
+        return make_response(jsonify(responseObject)), 403

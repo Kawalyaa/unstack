@@ -36,3 +36,19 @@ class TestAuth(BaseTest):
         data = json.loads(res.data.decode())
         self.assertEqual(data['message'], "user_name and password does not much")
         self.assertEqual(res.status_code, 401)
+
+    def test_user_logout(self):
+        self.post_user(path='api/v2/auth/signup')
+        res = self.post(path='api/v2/auth/login', data=self.log, auth=None)
+        data = json.loads(res.data.decode())
+        token = data['access_token']
+        logout = self.post2(path='api/v2/auth/logout', auth=token)
+        data2 = json.loads(logout.data.decode())
+        self.assertEqual(data2['message'], "Loged out successfully")
+        self.assertEqual(logout.status_code, 200)
+
+    def test_another_logout(self):
+        res = self.logout()
+        data2 = json.loads(res.data.decode())
+        self.assertEqual(data2['message'], "Loged out successfully")
+        self.assertEqual(res.status_code, 200)
