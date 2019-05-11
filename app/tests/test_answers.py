@@ -41,3 +41,11 @@ class TestQuestion(BaseTest):
         data = json.loads(res.data.decode())
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['description'], "Answer with id 1 is updated")
+
+    def test_vote_answer(self):
+        self.post_questions()
+        self.post_answers()
+        res = self.vote_answer()
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['description'], "Answer voted successfully")

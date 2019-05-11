@@ -73,7 +73,7 @@ def edit_answer(question_id, answer_id):
     check_id = check_exists_question_id_and_answer_id(question_id, answer_id)
     if check_id == "The question_id or answer_id is not found":
         return jsonify({"message": "question_id or answer_id provided is not found"})
-    # Get the user_id of questions and answers using question_id and answer_is
+    # Get the user_id of questions and answers using question_id and answer_id
     question_author_id = BaseModel().get_item_id('user_id', 'questions', 'question_id', question_id)
     answer_author_id = BaseModel().get_item_id('user_id', 'answers', 'answer_id', answer_id)
 
@@ -102,3 +102,23 @@ def edit_answer(question_id, answer_id):
 
     else:
         return make_response(jsonify({"message": "Your not authorised to edit this answer"}), 401)
+
+
+@answer.route('/api/v2/question/<int:question_id>/answers/<int:answer_id>/vote', methods=['PUT'])
+@auth_required
+def vote_for_answer(question_id, answer_id):
+    """This endpoint allows an authorized user to upvote or downvote an answer"""
+    check = check_exists_question_id_and_answer_id(question_id, answer_id)
+    if check == "The question_id or answer_id is not found":
+        return jsonify({"message": "The question_id or answer_id is not found"}), 404
+    answers = AnswersModel()
+    # vote for answers
+    vote = int(request.get_json()['up_votes'])
+    if vote not in [-1, 1]:  # make sure votes is either -1 or 1
+        raise BadRequest("Up vote value is not allowed")
+    vote_answer = answers.vote_answer(answer_id, vote)
+    return make_response(jsonify({
+        "message": "Success",
+        "description": "Answer voted successfully",
+        "new_votes": str(vote_answer)
+    }), 200)

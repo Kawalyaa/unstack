@@ -63,6 +63,9 @@ class BaseTest(unittest.TestCase):
             "title": "Tech News",
             "description": "He is called Elon Musk a 42yrs old"
         }
+        self.vote = {
+            "up_votes": 1
+        }
 
         with self.app.app_context():
             self.db = DataBaseConnection().init_db()
@@ -200,6 +203,11 @@ class BaseTest(unittest.TestCase):
     def edit_answer(self):
         token = self.second_login().json['access_token']
         res = self.put('/api/v2/question/1/answers/1', data=self.answers2, auth=token)
+        return res
+
+    def vote_answer(self):
+        token = self.normal_login().json['access_token']
+        res = self.put('/api/v2/question/1/answers/1/vote', data=self.vote, auth=token)
         return res
 
     def tearDown(self):
