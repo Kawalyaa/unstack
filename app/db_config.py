@@ -12,11 +12,20 @@ def tables():
     blacklist = """ CREATE TABLE IF NOT EXISTS blacklist (
     tokens character varying(200) NOT NULL
     ); """
-    return[users, blacklist]
+
+    questions = """ CREATE TABLE IF NOT EXISTS questions (
+    question_id serial PRIMARY KEY NOT NULL,
+    title varchar (50) NOT NULL,
+    description varchar (200) NOT NULL,
+    user_id numeric NOT NULL,
+    created_on timestamp with time zone DEFAULT ('now'::text)::date NOT NULL
+    );"""
+    return[users, blacklist, questions]
 
 
 def destroydb():
     """Deletes all tables after tests have been run"""
     users = """DROP TABLE IF EXISTS users CASCADE;"""
     blacklist = """DROP TABLE IF EXISTS blacklist CASCADE;"""
-    return[users, blacklist]
+    questions = """DROP TABLE IF EXISTS questions CASCADE;"""
+    return[users, blacklist, questions]
