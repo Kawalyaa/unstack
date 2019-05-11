@@ -81,3 +81,11 @@ class TestQuestion(BaseTest):
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['message'], "No item found")
         self.assertTrue(data['message'])
+
+    def test_get_question_and_its_answers(self):
+        self.post_questions()
+        self.post_answers()
+        res = self.get_qtn_and_ans()
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['message'], "Success")

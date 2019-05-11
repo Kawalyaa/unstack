@@ -1,6 +1,3 @@
-# from functools import wraps
-# from flask import request, g
-# from werkzeug.exceptions import BadRequest, Unauthorized
 from app.api.v2.models.base_model import BaseModel
 
 
@@ -48,7 +45,6 @@ class UserModel(BaseModel):
         con.commit()
         cur.close()
         return blacklisted_token
-        # self.save_incoming_data_or_updates(query)
 
     def get_user_by_username(self, user_name):
         con = self.init_db()
@@ -58,7 +54,6 @@ class UserModel(BaseModel):
         cur.execute(query)
         user_info = cur.fetchone()
         con.commit()
-        # user_info = self.fetch_single_data_row(query)
         return user_info
 
     def get_user_name_by_id(self, user_id):

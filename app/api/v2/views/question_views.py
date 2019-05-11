@@ -1,64 +1,37 @@
 # from flasgger import swag_from
-from flask import request, make_response, jsonify, Blueprint
+from flask import request, make_response, jsonify, Blueprint, g
 from app.api.v2.models.question_models import QuestionModel
 from app.api.v2.views.decoraters import auth_required
-# from app.api.version2.models.answers_model import AnswersModel
-# from app.api.version2.models.user_model import UserModel
-# from werkzeug.exceptions import NotFound
+from app.api.v2.models.answer_model import AnswersModel
+from app.api.v2.models.auth_models import UserModel
+
 
 question = Blueprint('question', __name__)
 
 
 @question.route('/api/v2/question', methods=['POST'])
+@auth_required
 def post_question():
     """creating a blog and protecting routes"""
-
-    auth_header = request.headers.get('Authorization')
-    if auth_header:
-        auth_token = auth_header.split(" ")[1]
-    else:
-            auth_token = ''
-    if auth_token:
-        resp = QuestionModel().decode_token(auth_token)
-        if not isinstance(resp, str):
-            user_id = resp
-            req = request.get_json()
-            data = {
-                "title": req["title"],
-                "description": req["description"],
-                "user_id": int(user_id)
-            }
-            QuestionModel().validate(data)
-            requester = QuestionModel(**data)
-            check = requester.get_item('questions', 'description', data["description"])
-            if check:
-                return jsonify({"message": "question already exists"}), 409
-            post_id = requester.save()
-            if isinstance(post_id, int):
-                try:
-                    return make_response(jsonify({
-                        "message": "Question Created successfully",
-                        "post_id": post_id,
-                        "user_id": user_id
-                    }), 201)
-                except Exception as e:
-                    responseObject = {
-                        'status': 'fail',
-                        'message': e
-                    }
-                return make_response(jsonify(responseObject)), 200
-        else:
-            responseObject = {
-                'status': 'fail',
-                'message': resp
-            }
-            return make_response(jsonify(responseObject)), 401
-    else:
-        responseObject = {
-            'status': 'fail',
-            'message': 'Provide a valid auth token.'
-        }
-        return make_response(jsonify(responseObject)), 403
+    user_id = g.user
+    req = request.get_json()
+    data = {
+        "title": req["title"],
+        "description": req["description"],
+        "user_id": int(user_id)
+    }
+    QuestionModel().validate(data)
+    requester = QuestionModel(**data)
+    check = requester.get_item('questions', 'description', data["description"])
+    if check:
+        return jsonify({"message": "question already exists"}), 409
+    question_id = requester.save()
+    if isinstance(question_id, int):
+        return make_response(jsonify({
+            "message": "Question Created successfully",
+            "question_id": question_id,
+            "user_id": user_id
+        }), 201)
 
 
 @question.route('/api/v2/question', methods=['GET'])
@@ -121,3 +94,25 @@ def delete(question_id):
     deleted.delete_tb_value("questions", "question_id", question_id)
     message = "question with id {} is Deleted".format(question_id)
     return make_response(jsonify({"message": message}), 200)
+
+
+@question.route('/api/v2/question/plus/answers/<int:question_id>', methods=['GET'])
+@auth_required
+def get_qtn_and_ans(question_id):
+    """Returns a question and all it's answers"""
+    # get all question details
+    question_details = QuestionModel().get_item("questions", "question_id", question_id)
+    if not question_details:
+        return jsonify({"message": "Not posts found"}), 404
+    answers = AnswersModel().get_answers_by_question_id(int(question_id))
+    question_id, title, description, user_id, created_on = question_details  # result from question_details
+    user = UserModel().get_user_name_by_id(int(user_id))  # get user_name
+    return make_response(jsonify({
+        "message": "Success",
+        "user_name": user,
+        "title": title,
+        "description": description,
+        "user_id": int(user_id),
+        "created_on": created_on,
+        "answers": answers
+    }), 200)
