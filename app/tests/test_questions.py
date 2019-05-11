@@ -89,3 +89,26 @@ class TestQuestion(BaseTest):
         data = json.loads(res.data.decode())
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['message'], "Success")
+
+    def test_most_answered_question(self):
+        self.post_questions()
+        self.post_answers()
+        res = self.get_most_answered()
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['message'], "Success")
+
+    def test_get_question_by_user_name(self):
+        self.post_questions()
+        res = self.get_qtn_by_name()
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['message'], "ok")
+
+    def test_delete_question_and_its_answers(self):
+        self.post_questions()
+        self.post_answers()
+        res = self.delete_ques_and_ans()
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['message'], "question with id 1 and its answers deleted")

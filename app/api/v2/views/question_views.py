@@ -116,3 +116,70 @@ def get_qtn_and_ans(question_id):
         "created_on": created_on,
         "answers": answers
     }), 200)
+
+
+@question.route('/api/v2/question/most_answered', methods=['GET'])
+@auth_required
+def get_most_answered():
+    """This endpoint allows a user to get all the details to the question with the most answers"""
+    question = QuestionModel()
+    most_answered = question.most_answered()
+    question_id, number = most_answered
+    # get answer details using question_id
+    answers = AnswersModel().get_answers_by_question_id(int(question_id))
+    # get the post details using question_id
+    most_answered_question = QuestionModel().get_item("questions", "question_id", int(question_id))
+    question_id, title, description, user_id, created_on = most_answered_question
+    user = UserModel().get_user_name_by_id(int(user_id))  # get user_name
+    return make_response(jsonify({
+        "message": "Success",
+        "user_name": user,
+        "question_id": question_id,
+        "number": number,
+        "title": title,
+        "description": description,
+        "created_on": created_on,
+        "answers": answers
+    }), 200)
+
+
+@question.route('/api/v2/question/<user_name>', methods=['GET'])
+@auth_required
+def get_user_qtn(user_name):
+    """returns all the questions associated with a particular user"""
+    user_info = UserModel().get_user_by_username(user_name)
+    if not user_info:
+        return jsonify({"message": "the user_name does not exist"}), 404
+
+    user_id, password = user_info  # for user_id, password in user_ifo
+    ques = QuestionModel()
+    question = ques.get_item("questions", "user_id", int(user_id))
+    question_list = []
+    if not question:
+        return jsonify({"message": "Question not found"}), 404
+
+    question_id, title, description, user_id, created_on = question
+    quest_detail = {
+        "question_id": int(question_id),
+        "title": title,
+        "description": description,
+        "user_id": int(user_id),
+        "created_on": created_on
+    }
+    question_list.append(quest_detail)
+    return make_response(jsonify({
+        "message": "ok",
+        "user": user_name,
+        "question": question_list
+    }), 200)
+
+
+@question.route('/api/v2/question/answer/<int:question_id>', methods=['DELETE'])
+@auth_required
+def delete_qtn_and_ans(question_id):
+    """Endpoint for deleting aquestion and its answers"""
+    check = QuestionModel().check_exists("questions", "question_id", question_id)
+    if check is False:
+        return jsonify({"message": "question not found"}), 404
+    delete = QuestionModel().delete_question_and_its_answers(question_id)
+    return make_response(jsonify({"message": delete}), 200)
