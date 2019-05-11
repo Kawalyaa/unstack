@@ -22,6 +22,11 @@ class BaseTest(unittest.TestCase):
             "password": "bornagain"
         }
 
+        self.log2 = {
+            "user_name": "kuiawalya9aik",
+            "password": "bornaga"
+        }
+
         self.user2 = {
             "name": "Kawalyas",
             "user_name": "kawaandy",
@@ -68,8 +73,13 @@ class BaseTest(unittest.TestCase):
         return res
 
     def normal_login(self):
-        self.post_user(path='/auth/signup')
-        login = self.post(path='/auth/login', data=self.log, auth=None)
+        self.post_user(path='api/v2/auth/signup')
+        login = self.post(path='api/v2/auth/login', data=self.log, auth=None)
+        return login
+
+    def abnormal_login(self):
+        self.post_user(path='api/v2/auth/signup')
+        login = self.post(path='api/v2/auth/login', data=self.log2, auth=None)
         return login
 
     def login(self):
@@ -91,3 +101,10 @@ class BaseTest(unittest.TestCase):
         token = self.normal_login().json['access_token']
         res = self.post(path='/question', data=question, auth=token)
         return res
+
+    def tearDown(self):
+        """This function destroys objests created during the test run"""
+
+        with self.app.app_context():
+            DataBaseConnection().drop_all_tables()
+            self.db.close()
