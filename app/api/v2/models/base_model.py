@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 import jwt
-import os
+# import os
 from flask import current_app
 from app.db_con import DataBaseConnection as db_con
-KEY = os.getenv("SECRET")
+# KEY = os.getenv("SECRET")
 
 
 class BaseModel(db_con):
@@ -77,7 +77,7 @@ class BaseModel(db_con):
         return "Deleted"
 
     def get_item_id(self, item_id, table_name, field_name, value):
-        """This method inputs id and returns id if found"""
+        """This method takes id and returns id if found"""
         con = self.init_db()
         cur = con.cursor()
         query = "SELECT {} FROM {} WHERE {} = '{}'".format(item_id, table_name, field_name, value)

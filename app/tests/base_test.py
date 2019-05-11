@@ -17,6 +17,18 @@ class BaseTest(unittest.TestCase):
             "email": "kawaly@gmail.com"
         }
 
+        self.second_user = {
+            "name": "Kawalyaa",
+            "user_name": "kawalya",
+            "password": "bornagaini",
+            "email": "kawaly@gmail.com"
+        }
+
+        self.second_log = {
+            "user_name": "kawalya",
+            "password": "bornagaini"
+        }
+
         self.log = {
             "user_name": "kuiawalya9aik",
             "password": "bornagain"
@@ -42,6 +54,16 @@ class BaseTest(unittest.TestCase):
             "description": "Who is the founder of Tesla and spacex"
         }
 
+        self.answers = {
+            "title": "Tech News",
+            "description": "He is called Elon Musk"
+        }
+
+        self.answers2 = {
+            "title": "Tech News",
+            "description": "He is called Elon Musk a 42yrs old"
+        }
+
         with self.app.app_context():
             self.db = DataBaseConnection().init_db()
 
@@ -53,7 +75,7 @@ class BaseTest(unittest.TestCase):
         return headers
 
     def post(self, path, data, auth):
-        """This endpoint allows posting data for both authentication and open"""
+        """This method allows posting data for both authentication and open"""
         dto = json.dumps(data)
         if auth is None:
             headers = None
@@ -63,7 +85,7 @@ class BaseTest(unittest.TestCase):
         return res
 
     def put(self, path, data, auth):
-        """This endpoint allows posting data for both authentication and open"""
+        """This method allows posting data for both authentication and open"""
         dto = json.dumps(data)
         if auth is None:
             headers = None
@@ -73,7 +95,7 @@ class BaseTest(unittest.TestCase):
         return res
 
     def delete(self, path, auth):
-        """This endpoint allows deleting data for  authentication"""
+        """This method allows deleting data for  authentication"""
         if auth is None:
             headers = None
         else:
@@ -82,7 +104,7 @@ class BaseTest(unittest.TestCase):
         return res
 
     def post2(self, path, auth):
-        """This endpoint allows posting data for both authentication and open"""
+        """This method allows posting without providing data eg logout"""
         if auth is None:
             headers = None
         else:
@@ -100,26 +122,31 @@ class BaseTest(unittest.TestCase):
 
     def post_user(self, path=""):
         if not path:
-            path = 'api/v2/auth/signup'
+            path = '/api/v2/auth/signup'
         res = self.post(path=path, data=self.user, auth=None)
         return res
 
-    # def post_question(self):
-    #    """The user first login to post aquestion"""
-    #    resp = self.normal_login()
-    #    data = json.loads(resp.data.decode())
-    #    token = data['access_token']
-    #    res = self.post(path="api/v2/question", data=self.question, auth=token)
-    #    return res
+    def post_user2(self, path=""):
+        # second_user signup
+        if not path:
+            path = '/api/v2/auth/signup'
+        res = self.post(path=path, data=self.second_user, auth=None)
+        return res
 
     def normal_login(self):
-        self.post_user(path='api/v2/auth/signup')
-        login = self.post(path='api/v2/auth/login', data=self.log, auth=None)
+        self.post_user(path='/api/v2/auth/signup')
+        login = self.post(path='/api/v2/auth/login', data=self.log, auth=None)
+        return login
+
+    def second_login(self):
+        # second user login
+        self.post_user2(path='/api/v2/auth/signup')
+        login = self.post(path='/api/v2/auth/login', data=self.second_log, auth=None)
         return login
 
     def abnormal_login(self):
-        self.post_user(path='api/v2/auth/signup')
-        login = self.post(path='api/v2/auth/login', data=self.log2, auth=None)
+        self.post_user(path='/api/v2/auth/signup')
+        login = self.post(path='/api/v2/auth/login', data=self.log2, auth=None)
         return login
 
     def logout(self):
@@ -132,32 +159,47 @@ class BaseTest(unittest.TestCase):
 
     def post_questions(self):
         token = self.normal_login().json['access_token']
-        res = self.post(path='api/v2/question', data=self.question, auth=token)
+        res = self.post(path='/api/v2/question', data=self.question, auth=token)
         return res
 
     def invalid_question(self):
         """Posting question with no token"""
-        res = self.post(path='api/v2/question', data=self.question, auth=None)
+        res = self.post(path='/api/v2/question', data=self.question, auth=None)
         return res
 
     def get_questions(self):
         token = self.normal_login().json['access_token']
-        res = self.get(path='api/v2/question', auth=token)
+        res = self.get(path='/api/v2/question', auth=token)
         return res
 
     def get_one_question(self):
         token = self.normal_login().json['access_token']
-        res = self.get(path='api/v2/question/1', auth=token)
+        res = self.get(path='/api/v2/question/1', auth=token)
         return res
 
     def edit_question(self):
         token = self.normal_login().json['access_token']
-        res = self.put(path='api/v2/question/1', data=self.question2, auth=token)
+        res = self.put(path='/api/v2/question/1', data=self.question2, auth=token)
         return res
 
     def delete_question(self):
         token = self.normal_login().json['access_token']
-        res = self.delete(path='api/v2/question/1', auth=token)
+        res = self.delete(path='/api/v2/question/1', auth=token)
+        return res
+
+    def post_answers(self):
+        token = self.second_login().json['access_token']
+        res = self.post(path='/api/v2/answers/1', data=self.answers, auth=token)
+        return res
+
+    def make_user_prefered_answer(self):
+        token = self.normal_login().json['access_token']
+        res = self.put('/api/v2/question/1/answers/1', data=self.answers2, auth=token)
+        return res
+
+    def edit_answer(self):
+        token = self.second_login().json['access_token']
+        res = self.put('/api/v2/question/1/answers/1', data=self.answers2, auth=token)
         return res
 
     def tearDown(self):

@@ -4,6 +4,7 @@ from flask_cors import CORS
 from instance.config import app_config
 from app.api.v2.views.auth_views import auth as v2
 from app.api.v2.views.question_views import question as quest
+from app.api.v2.views.answer_views import answer as ans
 
 
 def creat_app(config_name):
@@ -16,6 +17,7 @@ def creat_app(config_name):
     CORS(app)
     app.register_blueprint(v2)
     app.register_blueprint(quest)
+    app.register_blueprint(ans)
     """Registering blueprint to the app"""
 
     app.config.from_object(app_config[config_name])
