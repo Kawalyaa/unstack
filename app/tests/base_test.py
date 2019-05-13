@@ -210,9 +210,22 @@ class BaseTest(unittest.TestCase):
         res = self.put('/api/v2/question/1/answers/1/vote', data=self.vote, auth=token)
         return res
 
-    def tearDown(self):
-        """This function destroys objests created during the test run"""
+    def get_qtn_and_ans(self):
+        token = self.normal_login().json['access_token']
+        res = self.get(path='/api/v2/question/plus/answers/1', auth=token)
+        return res
 
-        with self.app.app_context():
-            DataBaseConnection().drop_all_tables()
-            self.db.close()
+    def get_most_answered(self):
+        token = self.normal_login().json['access_token']
+        res = self.get(path='/api/v2/question/most_answered', auth=token)
+        return res
+
+    def get_qtn_by_name(self):
+        token = self.normal_login().json['access_token']
+        res = self.get(path='/api/v2/question/kuiawalya9aik', auth=token)
+        return res
+
+    def delete_ques_and_ans(self):
+        token = self.normal_login().json['access_token']
+        res = self.delete(path='/api/v2/question/answer/1', auth=token)
+        return res

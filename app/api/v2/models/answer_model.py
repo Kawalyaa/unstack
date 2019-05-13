@@ -57,11 +57,6 @@ class AnswersModel(BaseModel):
         query = "SELECT * FROM answers WHERE question_id={};".format(int(question_id))
         cur.execute(query)
         data = cur.fetchall()
-        # data_items = []
-        # if not isinstance(data, list):
-        #    return data_items.append(data)
-        # else:
-        #    data_items = data[:]  # copy data list to data_items list
         res = []
         for i, items in enumerate(data):  # return items in order with index
             answer_id, question_id, user_id, description, up_votes, date_created, user_preferred = items
@@ -85,10 +80,3 @@ class AnswersModel(BaseModel):
         query = "UPDATE answers SET description = '{}' WHERE answer_id = '{}'".format(description, answer_id)
         cur.execute(query)
         con.commit()
-
-    def delete_question_and_its_answers(self, question_id):
-        """Fuction ton to delete question and its answers by answer author"""
-        self.delete_tb_value('questions', 'question_id', question_id)
-        self.delete_tb_value('answers', 'question_id', question_id)
-        message = "question with {} and its answers deleted".format(question_id)
-        return message

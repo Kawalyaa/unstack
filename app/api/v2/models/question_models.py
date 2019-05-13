@@ -88,3 +88,19 @@ class QuestionModel(BaseModel):
         cur.execute(query)
         con.commit()
         return "Updated"
+
+    def most_answered(self):
+        """Obtains the question with the most answers"""
+        con = self.init_db()
+        cur = con.cursor()
+        query = "SELECT question_id, COUNT(answer_id) FROM answers GROUP BY question_id ORDER BY COUNT(answer_id) DESC;"
+        cur.execute(query)
+        data = cur.fetchone()
+        return data
+
+    def delete_question_and_its_answers(self, question_id):
+        """Fuction to delete question and its answers by answer author"""
+        self.delete_tb_value('questions', 'question_id', question_id)
+        self.delete_tb_value('answers', 'question_id', question_id)
+        message = "question with id {} and its answers deleted".format(question_id)
+        return message
