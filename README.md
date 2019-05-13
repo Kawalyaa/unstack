@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.org/Kawalyaa/unstack.svg?branch=feature)](https://travis-ci.org/Kawalyaa/unstack)  [![Coverage Status](https://coveralls.io/repos/github/Kawalyaa/unstack/badge.svg?branch=feature)](https://coveralls.io/github/Kawalyaa/ask-questionsdb?branch=feature) [![Maintainability](https://api.codeclimate.com/v1/badges/a03f4007df3278801558/maintainability)](https://codeclimate.com/github/Kawalyaa/unstack/maintainability)
+[![Build Status](https://travis-ci.org/Kawalyaa/unstack.svg?branch=feature)](https://travis-ci.org/Kawalyaa/unstack)  [![Coverage Status](https://coveralls.io/repos/github/Kawalyaa/unstack/badge.svg?branch=master)](https://coveralls.io/github/Kawalyaa/unstack?branch=master)  [![Maintainability](https://api.codeclimate.com/v1/badges/2bfcb5ec433449bbc047/maintainability)](https://codeclimate.com/github/Kawalyaa/unstack/maintainability)
 
 # UNSTACK
 
