@@ -101,7 +101,7 @@ $ nosetests app/tests
  POST | /api/v2/auth/signup | creat User account
  POST | /api/v2/auth/login | A user can login
  POST | /api/v2/auth/logout | A user can logout
- |   Questions endpoints                      |
+ |   Questions endpoints                      
  POST | /api/v2/question | A user can post question
  GET | /api/v2/question | A user can view all the questions
  GET | /api/v2/question/<int:question_id> | A user can view a single question
@@ -111,7 +111,7 @@ $ nosetests app/tests
  PUT | api/v2/question/<int:question_id> | A user can edit a question
  DELETE | api/v2/question/<int:question_id> | A user can delete a question
  DELETE | /api/v2/question/answer/<int:question_id> | A user can delete a question and its answer
- |        Answers Endpoint                           |
+ |        Answers Endpoint                           
  POST | /api/v2/answers/<int:question_id> | A user can post Answers
  PUT | /api/v2/question/<int:question_id>/answers/<int:answer_id> | A user can edit or make answer user_preferred
  PUT | /api/v2/question/<int:question_id>/answers/<int:answer_id>/vote | A user can vote for answer
