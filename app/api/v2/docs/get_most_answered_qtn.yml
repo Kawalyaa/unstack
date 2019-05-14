@@ -1,0 +1,19 @@
+Endpoint for geting most answered question
+---
+tags:
+  - Questions
+responses:
+    200:
+      description: Question found in the database.
+    404:
+      description: Question not found in the database.
+    401:
+      description: Authentication required
+security:
+- JWT:
+    description: pass in jwt token ie Bearer <jwt_token>
+    type: apiKey
+    schema: Bearer
+    name: token
+    in: header
+    BearerFormat: JWT

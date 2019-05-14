@@ -1,0 +1,64 @@
+The endpoint for registering users
+---
+tags:
+  - User Authentication
+parameters:
+  - name: body
+    description: This contains user registration details
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "username"
+        - "email"
+        - "password"
+      properties:
+        name:
+          type: "string"
+          example: "Kawalya"
+        username:
+          type: "string"
+          example: "kawalyaa"
+        email:
+          type: "string"
+          example: "kawalyaa@gmail.com"
+        password:
+          type: "string"
+          format: password
+          example: "Bornagain"
+
+responses:
+  201:
+    description: User successfully registered
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Successfully registered"
+  409:
+    description: User failed to register
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "User already exists"
+
+  400:
+    description: User failed to register
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - " value is lacking. It is required field"
+            - "The user_name provided is too short"
+            - "The user_name provided is too long"
+            - "The password provided is too short"
+            - "name can not have non alphatic characters"
+            - "The email provided is invalid"

@@ -1,0 +1,83 @@
+Endpoint to post a new question_test
+---
+ tags:
+  - Questions
+ parameters:
+  - name: body
+    description: This contains question creation details
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "title"
+        - "qtn_desc"
+      properties:
+        title:
+          type: "string"
+          example: "TECH NEWS"
+        description:
+          type: "string"
+          example: "Did Tesla company unveil the model Y series suv"
+
+ responses:
+  201:
+    description: Question successfully created
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Question created successfully"
+  409:
+    description: Failed to post a question
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Question already exists"
+
+  400:
+    description: Failed to post a question
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "value should not be empty"
+            - "title value should be a string"
+            - "description value should be a string"
+
+  401:
+    description: Failed to post a question
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "The token has expired"
+            - "The token is invalid"
+
+  403:
+    description: Failed to post a question
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "provide a valid auth token"
+
+ security:
+  - JWT:
+      description: Pass in jwt token. i.e Bearer <jwt>
+      type: apiKey
+      scheme: bearer
+      name: token
+      in: header
+      bearerFormat: JWT

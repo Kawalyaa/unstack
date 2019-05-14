@@ -1,0 +1,50 @@
+This endpoint to logout users
+---
+tags:
+  - User Authentication
+parameters:
+  - name: body
+    description: this contains user logout details
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+         - "access_token"
+      properties:
+        access_token:
+           type: "string"
+           example: "eyhgfdjdhdhde"
+
+responses:
+      200:
+        description: User successfully logedout
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              enum:
+                - "Loged out successfully"
+
+
+
+      401:
+       description: User failed to login
+       schema:
+        type: object
+        properties:
+          message:
+            type: string
+            enum:
+              - "Token has expired"
+
+      403:
+       description: User failed to login
+       schema:
+        type: object
+        properties:
+          message:
+            type: string
+            enum:
+              - "Provide a valid auth token"
