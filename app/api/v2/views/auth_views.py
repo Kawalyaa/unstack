@@ -1,12 +1,10 @@
 import os
 from flask import request, make_response, jsonify, Blueprint
-# from flasgger import swag_from
+from flasgger import swag_from
 from app.api.v2.models.auth_models import UserModel
 from werkzeug.exceptions import BadRequest
-# from flask.views import MethodView
 import string
 import re
-# import jwt
 
 auth = Blueprint('api_v2', __name__)
 
@@ -39,6 +37,7 @@ def validate_user(user):
 
 
 @auth.route('/api/v2/auth/signup', methods=['POST'])
+@swag_from('../docs/signup.yml')
 def signup_user():
     req = request.get_json()
 
@@ -75,6 +74,7 @@ def signup_user():
 
 
 @auth.route('/api/v2/auth/login', methods=['POST'])
+@swag_from('../docs/login.yml')
 def login_user():
     req = request.get_json()
     if not req:
@@ -91,15 +91,14 @@ def login_user():
     if res is False:
         return make_response(jsonify({
             "message": "No user found"
-        }), 401)
+        }), 404)
     record = UserModel().get_user_by_username(login['user_name'])
     user_id, password = record
     # our user name has got the password and the user_id
-    # This means if login['user_name'] == user_name in table, record or user_name has user_id, password
     if password != login['password']:
         return make_response(jsonify({
             "message": "user_name and password does not much"
-        }), 401)
+        }), 400)
     user = UserModel()
     token = user.ecnode_token(user_id)
     return make_response(jsonify({
@@ -109,6 +108,7 @@ def login_user():
 
 
 @auth.route('/api/v2/auth/logout', methods=['POST'])
+@swag_from('../docs/logout.yml')
 def logout_user():
     auth_header = request.headers.get('Authorization')
     if auth_header:

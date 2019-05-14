@@ -1,0 +1,25 @@
+Endpoint to edit an answer to a given question by question owner or answer owne.
+---
+tags:
+    - Answers
+parameters:
+    - in: path
+      name: question_id, answer_id
+      required: true
+      type: integer
+      description: input ids of the question and answer.
+responses:
+  200:
+    description: Answer with given id is updated or "user_preferd Successfully set.
+  401:
+    description: Not authorized to edit that question.
+  404:
+    description: question_id or answer_id provided is not found.
+security:
+  - JWT:
+      description: Pass in jwt token. i.e Bearer <jwt_token>
+      type: apiKey
+      scheme: bearer
+      name: token
+      in: header
+      bearerFormat: JWT

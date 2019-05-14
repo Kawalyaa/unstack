@@ -1,9 +1,7 @@
 from datetime import datetime, timedelta
 import jwt
-# import os
 from flask import current_app
 from app.db_con import DataBaseConnection as db_con
-# KEY = os.getenv("SECRET")
 
 
 class BaseModel(db_con):

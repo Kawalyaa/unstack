@@ -1,5 +1,5 @@
 from flask import Flask
-# from flasgger import Swagger
+from flasgger import Swagger
 from flask_cors import CORS
 from instance.config import app_config
 from app.api.v2.views.auth_views import auth as v2
@@ -14,6 +14,14 @@ def creat_app(config_name):
     app = Flask(__name__, instance_relative_config=True)
     """using instance_relative_config will load config file from instance folder when app created"""
     """Loading the configurations from config.py contained in the instance folder"""
+
+    app.config['SWAGGER'] = {'uiversion': 2, 'title': 'UNSTACK',
+                             'description': "is a web based app that enables users to \
+                             ask questions on the platform and get answers.",
+                             'basePath': '', 'version': '2.0.1'}
+
+    Swagger(app)
+
     CORS(app)
     app.register_blueprint(v2)
     app.register_blueprint(quest)

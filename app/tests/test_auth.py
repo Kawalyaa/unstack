@@ -35,7 +35,7 @@ class TestAuth(BaseTest):
         res = self.abnormal_login()
         data = json.loads(res.data.decode())
         self.assertEqual(data['message'], "user_name and password does not much")
-        self.assertEqual(res.status_code, 401)
+        self.assertEqual(res.status_code, 400)
 
     def test_user_logout(self):
         self.post_user(path='api/v2/auth/signup')
