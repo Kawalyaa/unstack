@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 
 [![Build Status](https://travis-ci.org/Kawalyaa/unstack.svg?branch=feature)](https://travis-ci.org/Kawalyaa/unstack)  [![Coverage Status](https://coveralls.io/repos/github/Kawalyaa/unstack/badge.svg?branch=feature)](https://coveralls.io/github/Kawalyaa/unstack?branch=feature)  [![Maintainability](https://api.codeclimate.com/v1/badges/2bfcb5ec433449bbc047/maintainability)](https://codeclimate.com/github/Kawalyaa/unstack/maintainability)
 
@@ -121,4 +119,3 @@ $ nosetests app/tests
 ## Author
 
 *Kawalya Andrew*
->>>>>>> 90dcfe6f8c18ecb6f3220ab3759aa7489480ef65
