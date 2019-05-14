@@ -1,6 +1,6 @@
 from flask import request, jsonify, make_response, Blueprint, g
 from werkzeug.exceptions import BadRequest
-# from app.api.v2.models.question_models import QuestionModel
+from flasgger import swag_from
 from app.api.v2.models.answer_model import AnswersModel
 from app.api.v2.views.decoraters import auth_required
 from app.api.v2.models.base_model import BaseModel
@@ -35,6 +35,7 @@ def check_exists_question_id_and_answer_id(question_id, answer_id):
 
 
 @answer.route('/api/v2/answers/<int:question_id>', methods=['POST'])
+@swag_from('../docs/post_ans.yml')
 @auth_required
 def post_answer(question_id):
     """This endpoint handles posting answers to a question"""
@@ -63,6 +64,7 @@ def post_answer(question_id):
 
 
 @answer.route('/api/v2/question/<int:question_id>/answers/<int:answer_id>', methods=['PUT'])
+@swag_from('../docs/edit_ans.yml')
 @auth_required
 def edit_answer(question_id, answer_id):
     """
@@ -105,6 +107,7 @@ def edit_answer(question_id, answer_id):
 
 
 @answer.route('/api/v2/question/<int:question_id>/answers/<int:answer_id>/vote', methods=['PUT'])
+@swag_from('../docs/vote_ans.yml')
 @auth_required
 def vote_for_answer(question_id, answer_id):
     """This endpoint allows an authorized user to upvote or downvote an answer"""

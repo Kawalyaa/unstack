@@ -1,4 +1,4 @@
-# from flasgger import swag_from
+from flasgger import swag_from
 from flask import request, make_response, jsonify, Blueprint, g
 from app.api.v2.models.question_models import QuestionModel
 from app.api.v2.views.decoraters import auth_required
@@ -10,6 +10,7 @@ question = Blueprint('question', __name__)
 
 
 @question.route('/api/v2/question', methods=['POST'])
+@swag_from('../docs/post_qtn.yml')
 @auth_required
 def post_question():
     """creating a blog and protecting routes"""
@@ -35,6 +36,7 @@ def post_question():
 
 
 @question.route('/api/v2/question', methods=['GET'])
+@swag_from('../docs/get_all_qtn.yml')
 @auth_required
 def get_all_questions():
     """getting all questions"""
@@ -50,6 +52,7 @@ def get_all_questions():
 
 
 @question.route('/api/v2/question/<int:question_id>', methods=['GET'])
+@swag_from('../docs/get_one_qtn.yml')
 @auth_required
 def get_one_question(question_id):
     """get aquestion by id """
@@ -66,6 +69,7 @@ def get_one_question(question_id):
 
 
 @question.route('/api/v2/question/<int:question_id>', methods=['PUT'])
+@swag_from('../docs/edit_qtn.yml')
 @auth_required
 def edit_question(question_id):
     """Endpoint for editing a question"""
@@ -84,6 +88,7 @@ def edit_question(question_id):
 
 
 @question.route('/api/v2/question/<int:question_id>', methods=['DELETE'])
+@swag_from('../docs/delete_qtn.yml')
 @auth_required
 def delete(question_id):
     """endpoint for deleting aquestion"""
@@ -97,6 +102,7 @@ def delete(question_id):
 
 
 @question.route('/api/v2/question/plus/answers/<int:question_id>', methods=['GET'])
+@swag_from('../docs/get_qtn_and_ans.yml')
 @auth_required
 def get_qtn_and_ans(question_id):
     """Returns a question and all it's answers"""
@@ -119,6 +125,7 @@ def get_qtn_and_ans(question_id):
 
 
 @question.route('/api/v2/question/most_answered', methods=['GET'])
+@swag_from('../docs/get_most_answered_qtn.yml')
 @auth_required
 def get_most_answered():
     """This endpoint allows a user to get all the details to the question with the most answers"""
@@ -144,12 +151,13 @@ def get_most_answered():
 
 
 @question.route('/api/v2/question/<user_name>', methods=['GET'])
+@swag_from('../docs/get_user_qtn_by_name.yml')
 @auth_required
 def get_user_qtn(user_name):
     """returns all the questions associated with a particular user"""
     user_info = UserModel().get_user_by_username(user_name)
     if not user_info:
-        return jsonify({"message": "the user_name does not exist"}), 404
+        return jsonify({"message": "The user_name does not exist"}), 404
 
     user_id, password = user_info  # for user_id, password in user_ifo
     ques = QuestionModel()
@@ -175,6 +183,7 @@ def get_user_qtn(user_name):
 
 
 @question.route('/api/v2/question/answer/<int:question_id>', methods=['DELETE'])
+@swag_from('../docs/delete_qtn_and_ans.yml')
 @auth_required
 def delete_qtn_and_ans(question_id):
     """Endpoint for deleting aquestion and its answers"""

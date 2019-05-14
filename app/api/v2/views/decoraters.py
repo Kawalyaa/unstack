@@ -1,6 +1,5 @@
 from functools import wraps
 from app.api.v2.models.auth_models import UserModel
-# from app.db_con import DataBaseConnection
 from flask import request, jsonify, g, make_response
 
 

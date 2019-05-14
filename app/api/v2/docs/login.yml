@@ -1,0 +1,42 @@
+This endpoint login registered users
+---
+tags:
+  - User Authentication
+parameters:
+  - name: body
+    description: this contains user login details
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+         - "email"
+         - "password"
+      properties:
+        user_name:
+           type: "string"
+           example: "kawalyai"
+        password:
+           type: "string"
+           format: password
+           example: "bornagain"
+responses:
+  200:
+    description: User successfully logged in
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Welcome kawalyai"
+
+  400:
+    description: User failed to login
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "user_name and password does not much"
