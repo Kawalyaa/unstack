@@ -7,7 +7,7 @@ from app.api.v2.views.question_views import question as quest
 from app.api.v2.views.answer_views import answer as ans
 
 
-def creat_app(config_name):
+def creat_app(config_name="development"):
     """This method creats app with configuration in the instance folder"""
     # We will be using the config variable to determine the database
 
@@ -28,7 +28,7 @@ def creat_app(config_name):
     app.register_blueprint(ans)
     """Registering blueprint to the app"""
 
-    app.config.from_object(app_config[config_name])
+    app.config.from_object(app_config["development"])
     """We are loading the default configuration"""
 
     app.config.from_pyfile('config.py')
