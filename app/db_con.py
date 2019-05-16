@@ -1,5 +1,5 @@
 import psycopg2
-from tables import tables, destroydb
+from app.tables import tables, destroydb
 
 
 class DataBaseConnection:
