@@ -1,5 +1,7 @@
+# from contextlib import closing
+from flask import current_app
 import psycopg2
-from app.tables import tables, destroydb
+# from app.tables import tables
 
 
 class DataBaseConnection:
@@ -8,17 +10,26 @@ class DataBaseConnection:
     def init_db(self):
         """Create tables and return connection"""
         con = psycopg2.connect("dbname='unstack' host='localhost' port=5432  user='kawalya' password='kawalyaa'")
-        cur = con.cursor()
-        all_tables = tables()
-        for query in all_tables:
-            cur.execute(query)
-            con.commit()
+        # cur = con.cursor()
+        with con as con, con.cursor() as cur:
+            with current_app.open_resource('schema.sql', mode='r') as sql:
+                cur.execute(sql.read())
+                con.commit()
         return con
 
-    def drop_all_tables(self):
-        drop_all = destroydb()
-        con = self.init_db()
+    def destroydb(self):
+        """Deletes all tables after tests have been run"""
+        con = psycopg2.connect("dbname='unstack' host='localhost' port=5432  user='kawalya' password='kawalyaa'")
         cur = con.cursor()
-        for query in drop_all:
+        users = """DROP TABLE IF EXISTS users CASCADE;"""
+        blacklist = """DROP TABLE IF EXISTS blacklist CASCADE;"""
+        questions = """DROP TABLE IF EXISTS questions CASCADE;"""
+        answers = """DROP TABLE IF EXISTS answers CASCADE;"""
+        queries = [users, blacklist, questions, answers]
+        for query in queries:
             cur.execute(query)
-            con.commit()
+        con.commit()
+
+    def drop_all_tables(self):
+        drop_all = self.destroydb()
+        return drop_all
