@@ -192,3 +192,18 @@ def delete_qtn_and_ans(question_id):
         return jsonify({"message": "question not found"}), 404
     delete = QuestionModel().delete_question_and_its_answers(question_id)
     return make_response(jsonify({"message": delete}), 200)
+
+
+@question.route('/api/v2/question/noauth', methods=['GET'])
+@swag_from('../docs/get_all_qtn.yml')
+def get_all():
+    """getting all questions"""
+    res = QuestionModel().get_question()
+    if res:
+        return make_response(jsonify({
+            "message": "ok",
+            "questions": res
+        }), 200)
+
+    else:
+        return make_response(jsonify({"message": "Database is empty"}))
