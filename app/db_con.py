@@ -9,7 +9,7 @@ class DataBaseConnection:
 
     def init_db(self):
         """Create tables and return connection"""
-        con = psycopg2.connect("dbname='unstack' host='localhost' port=5432  user='kawalya' password='kawalyaa'")
+        con = psycopg2.connect("dbname='unstack' host=172.17.0.1 port=5432  user='kawalya' password='kawalyaa'")
         # cur = con.cursor()
         with con as con, con.cursor() as cur:
             with current_app.open_resource('schema.sql', mode='r') as sql:
