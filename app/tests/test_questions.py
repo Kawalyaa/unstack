@@ -112,3 +112,9 @@ class TestQuestion(BaseTest):
         data = json.loads(res.data.decode())
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['message'], "question with id 1 and its answers deleted")
+
+    def test_welcomee(self):
+        res = self.welcome()
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['message'], "WELCOME TO UNSTACK APP")

@@ -194,16 +194,11 @@ def delete_qtn_and_ans(question_id):
     return make_response(jsonify({"message": delete}), 200)
 
 
-@question.route('/api/v2/question/noauth', methods=['GET'])
-@swag_from('../docs/get_all_qtn.yml')
-def get_all():
-    """getting all questions"""
-    res = QuestionModel().get_question()
-    if res:
-        return make_response(jsonify({
-            "message": "ok",
-            "questions": res
-        }), 200)
-
-    else:
-        return make_response(jsonify({"message": "Database is empty"}))
+@question.route('/', methods=['GET'])
+def welcome_note():
+    """Welcome note"""
+    res = "You have to first signup or login if you already have account"
+    return make_response(jsonify({
+        "message": "WELCOME TO UNSTACK APP",
+        "description": res
+    }), 200)

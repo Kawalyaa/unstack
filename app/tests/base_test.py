@@ -229,3 +229,7 @@ class BaseTest(unittest.TestCase):
         token = self.normal_login().json['access_token']
         res = self.delete(path='/api/v2/question/answer/1', auth=token)
         return res
+
+    def welcome(self):
+        res = self.get(path='/', auth=None)
+        return res
