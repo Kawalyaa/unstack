@@ -7,6 +7,7 @@ class TestQuestion(BaseTest):
     def tearDown(self):
         """This function destroys objests created during the test run"""
         DataBaseConnection().drop_all_tables()
+
         self.db.close()
 
     def test_post_question(self):
