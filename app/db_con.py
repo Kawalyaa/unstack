@@ -18,7 +18,7 @@ class DataBaseConnection:
     # return con
 
     def init_db(self):
-        con = psycopg2.connect("dbname='unstack' host='localhost' port=5432  user='kawalya' password='kawalyaa'")
+        con = psycopg2.connect("dbname='unstack' host='localhost' port='5432'  user='kawalya' password='kawalyaa'")
         # con = psycopg2.connect("dbname='unstack' port=5432  user='kawalya' password='kawalyaa'")
         with con as con, con.cursor() as cur:
             with current_app.open_resource('schema.sql', mode='r') as sql:
@@ -29,7 +29,7 @@ class DataBaseConnection:
     def destroydb(self):
         """Deletes all tables after tests have been run"""
         # con = psycopg2.connect('')
-        con = psycopg2.connect("dbname='unstack' host='localhost' port=5432  user='kawalya' password='kawalyaa'")
+        con = psycopg2.connect("dbname='unstack' host='localhost' port='5432'  user='kawalya' password='kawalyaa'")
         cur = con.cursor()
         # cur = con.cursor()psycopg2.connect("dbname='unstack' port=5432  user='kawalya' password='kawalyaa'"
         users = """DROP TABLE IF EXISTS users CASCADE;"""
