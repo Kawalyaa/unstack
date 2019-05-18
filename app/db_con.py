@@ -17,14 +17,14 @@ class DataBaseConnection:
     # con.commit()
     # return con
 
-    def init_db(self):
-        con = psycopg2.connect("dbname='unstack' host='localhost' port='5432'  user='kawalya' password='kawalyaa'")
-        # con = psycopg2.connect("dbname='unstack' port=5432  user='kawalya' password='kawalyaa'")
-        with con as con, con.cursor() as cur:
-            with current_app.open_resource('schema.sql', mode='r') as sql:
-                cur.execute(sql.read())
-                con.commit()
-                return con
+    # def init_db(self):
+    #    con = psycopg2.connect("dbname='unstack' host='localhost' port='5432'  user='kawalya' password='kawalyaa'")
+    #    # con = psycopg2.connect("dbname='unstack' port=5432  user='kawalya' password='kawalyaa'")
+    #    with con as con, con.cursor() as cur:
+    #        with current_app.open_resource('schema.sql', mode='r') as sql:
+    #            cur.execute(sql.read())
+    #            con.commit()
+    #            return con
 
     def destroydb(self):
         """Deletes all tables after tests have been run"""
