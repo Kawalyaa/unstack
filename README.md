@@ -5,6 +5,9 @@
 
 Unstack is a platform which enables people to ask question and get answers
 
+
+The api docs for the app are found [here](https://unstack.herokuapp.com/apidocs/#/)
+
 ## Built with
 
 * python 3
@@ -118,4 +121,4 @@ $ nosetests app/tests
 
 ## Author
 
-*Kawalya Andrew*
+*[KAWALYA ANDREW](https://github.com/Kawalyaa)*
