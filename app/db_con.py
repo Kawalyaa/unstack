@@ -1,4 +1,4 @@
-# import os
+import os
 from flask import current_app
 import psycopg2
 # from psycopg2.extras import RealDictCursor
@@ -18,7 +18,9 @@ class DataBaseConnection:
     # return con
 
     def init_db(self):
-        con = psycopg2.connect("dbname='unstack' host='localhost' port='5432'  user='kawalya' password='kawalyaa'")
+        # con = psycopg2.connect("dbname='unstack' host='localhost' port='5432'  user='kawalya' password='kawalyaa'")
+        db = os.getenv('DATABASE_URL')
+        con = psycopg2.connect(db)
         with con as con, con.cursor() as cur:
             with current_app.open_resource('schema.sql', mode='r') as sql:
                 cur.execute(sql.read())
