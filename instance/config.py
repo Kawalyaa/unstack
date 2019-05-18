@@ -4,6 +4,7 @@ class Config(object):
     """Parent configuration class contains infomation where all other environments will inherit"""
     DEGUG = False
     TESTING = False
+    CSRF_ENABLED = True
     SECRET = os.getenv("SECRET", "precious")
     """This gets the secret key from the .env file"""
     DATABASE_URL = os.getenv("DATABASE_URL")
@@ -12,6 +13,7 @@ class Config(object):
 
 class DevelopmentConfig(Config):
     """Configuration for development"""
+    DEVELOPMENT = True
     DEBUG = True
 
 
@@ -23,6 +25,7 @@ class TestingConfig(Config):
 
 class StagingConfig(Config):
     """Configurations for staging"""
+    DEVELOPMENT = True
     DEBUG = True
 
 class ProductionConfig(Config):
