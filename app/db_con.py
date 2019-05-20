@@ -7,7 +7,8 @@ class DataBaseConnection:
     """ Handles the main connection to the database of the app setting """
 
     def init_db(self):
-        con = os.getenv('DATABASE_URL')
+        db_url = os.getenv('DATABASE_URL')
+        con = psycopg2.connect(db_url)
         cur = con.cursor()
         with current_app.open_resource('schema.sql', mode='r') as sql:
             cur.execute(sql.read())
