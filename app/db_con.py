@@ -1,8 +1,5 @@
-import os
 from flask import current_app
 import psycopg2
-# from psycopg2.extras import RealDictCursor
-# from app.tables import tables
 
 
 class DataBaseConnection:
@@ -21,14 +18,10 @@ class DataBaseConnection:
     def init_db(self):
         con = self.connector()
         cur = con.cursor()
-        # db = os.getenv('DATABASE_URL')
-        # con = psycopg2.connect(db)
-
-        # with con as con, con.cursor() as cur:
         with current_app.open_resource('schema.sql', mode='r') as sql:
             cur.execute(sql.read())
-            con.commit()
-            return con
+        con.commit()
+        return con
 
     def destroydb(self):
         """Deletes all tables after tests have been run"""
