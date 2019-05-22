@@ -1,6 +1,7 @@
-from werkzeug.exceptions import BadRequest
+# from werkzeug.exceptions import BadRequest
 from app.api.v2.models.base_model import BaseModel
 from datetime import datetime
+# from app.api.v2.views.auth_views import BadRequest
 
 
 class QuestionModel(BaseModel):
@@ -11,13 +12,13 @@ class QuestionModel(BaseModel):
         self.user_id = user_id
         self.created_on = datetime.now()
 
-    def validate(self, the_input):
-        for key, value in the_input.items():
-            if not value:
-                raise BadRequest("{} should not be empty".format(key))
-            if key == "title" or key == "description":
-                if isinstance(value, int):
-                    raise BadRequest("{} value should be a string".format(key))
+    # def validate(self, the_input):
+    #    for key, value in the_input.items():
+    #        if not value:
+    #            raise BadRequest("{} should not be empty".format(key))
+    #        if key == "title" or key == "description":
+    #            if isinstance(value, int):
+    #                raise BadRequest("{} value should be a string".format(key))
 
     def save(self):
         """This method saves the post infomation"""

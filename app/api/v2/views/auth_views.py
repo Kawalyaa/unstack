@@ -2,7 +2,7 @@ import os
 from flask import request, make_response, jsonify, Blueprint
 from flasgger import swag_from
 from app.api.v2.models.auth_models import UserModel
-from werkzeug.exceptions import BadRequest
+# from werkzeug.exceptions import BadRequest
 import string
 import re
 
@@ -11,15 +11,32 @@ auth = Blueprint('api_v2', __name__)
 KEY = os.getenv("SECRET")
 
 
+class BadRequest(Exception):
+    """Custom exception class to be thrown when local error occurs."""
+    def __init__(self, message, status=400, payload=None):
+        self.message = message
+        self.status = status
+        self.payload = payload
+
+
+@auth.errorhandler(BadRequest)
+def handle_bad_request(error):
+    """Catch BadRequest exception globally, serialize into JSON, and respond with 400."""
+    payload = dict(error.payload or ())
+    payload['status'] = error.status
+    payload['message'] = error.message
+    return jsonify(payload), 400
+
+
 def validate_user(user):
     """This function validates the user input and rejects or accepts it"""
     for key, value in user.items():
         # ensure keys have values
         if not value:
-            raise BadRequest("{} is lacking. It is required field".format(key))
+            raise BadRequest("{} is lacking. It is a required field".format(key))
         # validate length
         if key == "user_name" or key == "password":
-            if len(value) < 4:
+            if len(value) < 5:
                 raise BadRequest("The {} provided is too short, it should be 5 characters above".format(key))
             elif len(value) > 15:
                 raise BadRequest("The {} provided is too long, it should be less than 15 characters".format(key))

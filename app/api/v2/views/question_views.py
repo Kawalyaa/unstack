@@ -4,9 +4,19 @@ from app.api.v2.models.question_models import QuestionModel
 from app.api.v2.views.decoraters import auth_required
 from app.api.v2.models.answer_model import AnswersModel
 from app.api.v2.models.auth_models import UserModel
+# from app.api.v2.views.auth_views import BadRequest
 
 
 question = Blueprint('question', __name__)
+
+
+# def validate(the_input):
+#    for key, value in the_input.items():
+#        if not value:
+#            raise BadRequest("{} should not be empty".format(key))
+#        if key == "title" or key == "description":
+#            if isinstance(value, int):
+#                raise BadRequest("{} value should be a string".format(key))
 
 
 @question.route('/api/v2/question', methods=['POST'])
@@ -21,8 +31,12 @@ def post_question():
         "description": req["description"],
         "user_id": int(user_id)
     }
-    QuestionModel().validate(data)
-    requester = QuestionModel(**data)
+    if not data["title"] or not data["description"]:
+        return jsonify({"message": "Title or description should not be empty"})
+    if isinstance(data["title"], int):
+        return jsonify({"message": "Title should be a string"})
+
+    requester = QuestionModel(**data)  # Load a dic for class fields
     check = requester.get_item('questions', 'description', data["description"])
     if check:
         return jsonify({"message": "question already exists"}), 409

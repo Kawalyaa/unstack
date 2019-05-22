@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 import jwt
+import string
+import re
 from flask import current_app
 from app.db_con import DataBaseConnection as db_con
 
@@ -98,3 +100,27 @@ class BaseModel(db_con):
         resp = cur.fetchone()
         con.commit()
         return resp
+
+    def validate_user(self, auser):
+        """This function validates the user input and rejects or accepts it"""
+        for key, value in auser.items():
+            # ensure keys have values
+            if not value:
+                return ("{} is lacking. It is required field".format(key))
+            # validate length
+            if key == "user_name" or key == "password":
+                if len(value) < 4:
+                    return ("The {} provided is too short, it should be 5 characters above".format(key))
+                elif len(value) > 15:
+                    return ("The {} provided is too long, it should be less than 15 characters".format(key))
+
+            if key == "name":
+                # make sure the value provided is a string
+                for i in value:
+
+                    if i not in string.ascii_letters:
+                        return ("{} can not have non alphatic characters".format(key))
+            if key == "email":
+                # make sure email contains expetected characters
+                if not re.match(r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', value):
+                    return ("The email provided is invalid")
