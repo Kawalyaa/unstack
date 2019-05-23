@@ -71,7 +71,6 @@ class BaseModel(db_con):
         query = "DELETE FROM {} WHERE {}={};".format(table_name, field_name, value)
         cur.execute(query)
         con.commit()
-        # self.save_incoming_data_or_updates(query)
         return "Deleted"
 
     def get_item_id(self, item_id, table_name, field_name, value):

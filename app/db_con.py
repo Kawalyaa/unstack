@@ -18,6 +18,7 @@ class DataBaseConnection:
     def init_db(self):
         con = self.connector()
         cur = con.cursor()
+        # Read the schema.sql file
         with current_app.open_resource('schema.sql', mode='r') as sql:
             cur.execute(sql.read())
         con.commit()
@@ -37,5 +38,6 @@ class DataBaseConnection:
         con.commit()
 
     def drop_all_tables(self):
+        """destroying all the tables"""
         drop_all = self.destroydb()
         return drop_all

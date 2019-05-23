@@ -14,15 +14,19 @@ question = Blueprint('question', __name__)
 @auth_required
 def post_question():
     """creating a blog and protecting routes"""
-    user_id = g.user
+    user_id = g.user  # get current user id
     req = request.get_json()
     data = {
         "title": req["title"],
         "description": req["description"],
         "user_id": int(user_id)
     }
-    QuestionModel().validate(data)
-    requester = QuestionModel(**data)
+    if not data["title"] or not data["description"]:
+        return jsonify({"message": "Title or description should not be empty"})
+    if isinstance(data["title"], int):
+        return jsonify({"message": "Title should be a string"})
+
+    requester = QuestionModel(**data)  # Load a dic for class fields
     check = requester.get_item('questions', 'description', data["description"])
     if check:
         return jsonify({"message": "question already exists"}), 409
@@ -110,6 +114,7 @@ def get_qtn_and_ans(question_id):
     question_details = QuestionModel().get_item("questions", "question_id", question_id)
     if not question_details:
         return jsonify({"message": "Not posts found"}), 404
+    # get the answer details
     answers = AnswersModel().get_answers_by_question_id(int(question_id))
     question_id, title, description, user_id, created_on = question_details  # result from question_details
     user = UserModel().get_user_name_by_id(int(user_id))  # get user_name

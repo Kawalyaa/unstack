@@ -1,5 +1,4 @@
 from flask import request, jsonify, make_response, Blueprint, g
-from werkzeug.exceptions import BadRequest
 from flasgger import swag_from
 from app.api.v2.models.answer_model import AnswersModel
 from app.api.v2.views.decoraters import auth_required
@@ -7,15 +6,6 @@ from app.api.v2.models.base_model import BaseModel
 
 
 answer = Blueprint('answer', __name__)
-
-
-def validate_input(data):
-    for key, value in data.items():
-        if not value:
-            raise BadRequest("The{} is lacking. It is a required field".format(key))
-        if key == "description":
-            if len(value) < 10:
-                raise BadRequest("The{} is too short. It should 10 characters and above".forrmat(key))
 
 
 def check_exists_question_id_and_user_id(question_id, user_id):
@@ -46,7 +36,9 @@ def post_answer(question_id):
         "question_id": int(question_id),
         "user_id": user_id
     }
-    validate_input(answer)
+    if not answer["description"]:
+        return jsonify({"message": "The description feild should not be empty"})
+
     ans_req = AnswersModel(**answer)
     check = check_exists_question_id_and_user_id(answer['question_id'], answer['user_id'])
     if check == "The question_id or user_id is not found":
@@ -118,7 +110,7 @@ def vote_for_answer(question_id, answer_id):
     # vote for answers
     vote = int(request.get_json()['up_votes'])
     if vote not in [-1, 1]:  # make sure votes is either -1 or 1
-        raise BadRequest("Up vote value is not allowed")
+        return jsonify({"message": "Up vote value is not allowed"})
     vote_answer = answers.vote_answer(answer_id, vote)
     return make_response(jsonify({
         "message": "Success",
