@@ -10,7 +10,6 @@ class TestAuth(BaseTest):
         self.db.close()
 
     def test_user_signup(self):
-        # DataBaseConnection().drop_all_tables()
         reg = self.post_user(path='api/v2/auth/signup')
         data = json.loads(reg.data.decode())
         self.assertEqual(data['message'], "created successfully")
@@ -52,3 +51,27 @@ class TestAuth(BaseTest):
         data2 = json.loads(res.data.decode())
         self.assertEqual(data2['message'], "Loged out successfully")
         self.assertEqual(res.status_code, 200)
+
+    def test_logout_without_token(self):
+        res = self.logout2()
+        data2 = json.loads(res.data.decode())
+        self.assertEqual(data2['message'], "Provide a valid auth token.")
+        self.assertEqual(res.status_code, 403)
+
+    def test_user_signup_with_empty_cridential(self):
+        reg = self.post_user_empty_cred(path='api/v2/auth/signup')
+        data = json.loads(reg.data.decode())
+        self.assertEqual(data['message'], "name is lacking. It is a required field")
+        self.assertEqual(reg.status_code, 400)
+
+    def test_user_signup_with_short_password(self):
+        reg = self.post_user_with_short_pswd(path='api/v2/auth/signup')
+        data = json.loads(reg.data.decode())
+        self.assertEqual(data['message'], "The password provided is too short, it should be 5 characters above")
+        self.assertEqual(reg.status_code, 400)
+
+    def test_user_signup_with_wrong_email(self):
+        reg = self.post_user_with_wrong_password(path='api/v2/auth/signup')
+        data = json.loads(reg.data.decode())
+        self.assertEqual(data['message'], "The email provided is invalid")
+        self.assertEqual(reg.status_code, 400)

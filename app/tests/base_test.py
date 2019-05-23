@@ -67,6 +67,27 @@ class BaseTest(unittest.TestCase):
             "up_votes": 1
         }
 
+        self.empty = {
+            "name": "",
+            "user_name": "",
+            "password": "",
+            "email": ""
+        }
+
+        self.short = {
+            "name": "Kawalya",
+            "user_name": "kuiawalya9aik",
+            "password": "bo",
+            "email": "kawaly@gmail.com"
+        }
+
+        self.wrong_email = {
+            "name": "Kawalya",
+            "user_name": "kuiawalya9aik",
+            "password": "bornagain",
+            "email": "kawalygmail.com"
+        }
+
         with self.app.app_context():
             self.db = DataBaseConnection().init_db()
 
@@ -136,6 +157,24 @@ class BaseTest(unittest.TestCase):
         res = self.post(path=path, data=self.second_user, auth=None)
         return res
 
+    def post_user_empty_cred(self, path=""):
+        if not path:
+            path = '/api/v2/auth/signup'
+        res = self.post(path=path, data=self.empty, auth=None)
+        return res
+
+    def post_user_with_short_pswd(self, path=""):
+        if not path:
+            path = '/api/v2/auth/signup'
+        res = self.post(path=path, data=self.short, auth=None)
+        return res
+
+    def post_user_with_wrong_password(self, path=""):
+        if not path:
+            path = '/api/v2/auth/signup'
+        res = self.post(path=path, data=self.wrong_email, auth=None)
+        return res
+
     def normal_login(self):
         self.post_user(path='/api/v2/auth/signup')
         login = self.post(path='/api/v2/auth/login', data=self.log, auth=None)
@@ -158,6 +197,11 @@ class BaseTest(unittest.TestCase):
         data = json.loads(res.data.decode())
         token = data['access_token']
         logout = self.post2(path='api/v2/auth/logout', auth=token)
+        return logout
+
+    def logout2(self):
+        self.normal_login()
+        logout = self.post2(path='api/v2/auth/logout', auth=None)
         return logout
 
     def post_questions(self):
