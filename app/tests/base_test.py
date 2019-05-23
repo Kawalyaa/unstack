@@ -275,5 +275,6 @@ class BaseTest(unittest.TestCase):
         return res
 
     def welcome(self):
+        "The welcom not of the app"
         res = self.get(path='/', auth=None)
         return res
