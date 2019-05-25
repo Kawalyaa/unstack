@@ -6,8 +6,6 @@ config_name = os.getenv("FLASK_ENV")
 """Gets the app settings defined in the .env file"""
 app = creat_app(config_name)
 """defining the configuration to be used"""
-# config_name = os.getenv("FLASK_ENV")
-# """Get the app environment from the .env file"""
 
 
 @app.errorhandler(404)
